@@ -1,0 +1,11 @@
+.logo {
+  .extended-text {
+    display: none;
+  }
+
+  &:hover {
+    .extended-text {
+      display: inline;
+    }
+  }
+}
