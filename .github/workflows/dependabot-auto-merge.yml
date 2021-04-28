@@ -1,12 +1,14 @@
 name: Auto Comment
-on: [pull_request]
+on: [pull_request_target]
 jobs:
   run:
     runs-on: ubuntu-latest
-    if: ${{ github.actor == 'dependabot' }}
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
-      - uses: bubkoo/auto-comment@v1
+      - name: 'Comment on Pull Request'
+        uses: actions/github-script@0.3.0
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          pullRequestOpened: >
-            @dependabot merge
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: '@dependabot merge' });
