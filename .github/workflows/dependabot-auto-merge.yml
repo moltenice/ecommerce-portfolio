@@ -3,7 +3,7 @@ on: [pull_request]
 jobs:
   run:
     runs-on: ubuntu-latest
-    if: ${{ author == 'dependabot' }}
+    if: ${{ env.GITHUB_ACTOR == 'dependabot' }}
     steps:
       - uses: bubkoo/auto-comment@v1
         with:
