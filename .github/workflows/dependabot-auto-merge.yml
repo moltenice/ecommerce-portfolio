@@ -4,11 +4,24 @@ on:
   pull_request_target:
 
 jobs:
-  auto-merge:
+  worker:
     runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
     steps:
-      - uses: actions/checkout@v2
-      - uses: ahmadnassri/action-dependabot-auto-merge@v2
+      - name: automerge
+        uses: actions/github-script@v4
         with:
-          target: all
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          result-encoding: string
+          script: |
+            github.pulls.createReview({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.pull_request.number,
+              event: 'APPROVE'
+            })
+            github.pulls.merge({
+              owner: context.payload.repository.owner.login,
+              repo: context.payload.repository.name,
+              pull_number: context.payload.pull_request.number
+            })
